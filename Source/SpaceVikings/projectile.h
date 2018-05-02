@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "PhysicsEngine/RadialForceComponent.h"
 #include "projectile.generated.h"
 
 UCLASS()
@@ -30,6 +31,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
 		class UStaticMeshComponent* mesh;
+
+	UPROPERTY(EditAnywhere, Category = "Projectile")
+		class URadialForceComponent* radialForce;
 
 	UStaticMesh* staticMesh;
 

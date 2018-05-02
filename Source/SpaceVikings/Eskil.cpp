@@ -3,6 +3,7 @@
 #include "Eskil.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 #include "DrawDebugHelpers.h"
+#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
 AEskil::AEskil()
@@ -53,6 +54,9 @@ AEskil::AEskil()
 
 	radialForce = CreateDefaultSubobject<URadialForceComponent>(TEXT("Radial Force"));
 	radialForce->SetupAttachment(hammer);
+
+	arrow = CreateDefaultSubobject<UArrowComponent>(TEXT("Projectile Spawn"));
+	arrow->SetupAttachment(GetMesh(), FName(TEXT("Weapon")));
 }
 
 void AEskil::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -185,22 +189,18 @@ void AEskil::usingGun()
 				UGameplayStatics::ProjectWorldToScreen(UGameplayStatics::GetPlayerController(GetWorld(), 0), hit.Component->GetComponentLocation(), screenPos, true);
 				target->SetVisibility(ESlateVisibility::Visible);
 				target->SetPositionInViewport(screenPos);
+
+				FRotator rotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), hit.Actor->GetActorLocation());
+				arrow->SetWorldRotation(rotation);
 			}
 			else
 			{
 				GLog->Log("No hit");
 				target->SetVisibility(ESlateVisibility::Hidden);
 				targetLock = false;
+				arrow->SetRelativeRotation(FRotator(0, 35, 0));
 			}
 		}
-
-		FActorSpawnParameters spawnParams;
-		spawnParams.Owner = this;
-		spawnParams.Instigator = Instigator;
-
-		
-
-		//GetWorld()->SpawnActor<Aprojectile>(projectile, leftArrow->GetComponentLocation(), leftArrow->GetComponentRotation(), spawnParams);
 	}
 	else
 	{
@@ -226,12 +226,23 @@ void AEskil::isUsingHammer()
 		useGun = true;
 		gun->SetVisibility(true);
 		hammer->SetVisibility(false);
+
+		fireGun();
 	}
 }
 
 void AEskil::setAttacking()
 {
 	attacking = true;
+}
+
+void AEskil::fireGun()
+{
+	FActorSpawnParameters spawnParams;
+	spawnParams.Owner = this;
+	spawnParams.Instigator = Instigator;
+
+	GetWorld()->SpawnActor<Aprojectile>(projectile, arrow->GetComponentLocation(), arrow->GetComponentRotation(), spawnParams);
 }
 
 void AEskil::onOverlapBegin(UPrimitiveComponent * overlapComp, AActor * otherActor, UPrimitiveComponent * otherComp, int32 otherBodyIndex, bool bFromSweep, const FHitResult & sweepResult)

@@ -14,6 +14,8 @@ Aprojectile::Aprojectile()
 	mesh->SetStaticMesh(staticMesh);
 	mesh->OnComponentBeginOverlap.AddDynamic(this, &Aprojectile::onOverlapBegin);
 	SetRootComponent(mesh);
+
+	radialForce = CreateDefaultSubobject<URadialForceComponent>(TEXT("Radial Force"));
 }
 
 // Called when the game starts or when spawned
@@ -32,7 +34,7 @@ void Aprojectile::onOverlapBegin(UPrimitiveComponent * overlapComp, AActor * oth
 {
 	GLog->Log("Overlaped");
 	UGameplayStatics::ApplyDamage(otherActor, 1.5f, NULL, this, NULL);
-	//radialForce->FireImpulse();
-	Destroy();
+	radialForce->FireImpulse();
+	SetLifeSpan(0);
 }
 
