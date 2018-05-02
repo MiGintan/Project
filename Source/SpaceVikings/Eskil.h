@@ -15,6 +15,7 @@
 #include "PhysicsEngine/RadialForceComponent.h"
 #include "projectile.h"
 #include "Aim.h"
+#include "Components/ArrowComponent.h"
 #include "Eskil.generated.h"
 
 UCLASS(config = Game)
@@ -60,6 +61,12 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Gun")
 		TSubclassOf<Aprojectile> projectile;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
+		class UArrowComponent* arrow;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Currency")
+		float amount;
+
 private:
 	UFUNCTION()
 		void teleport();
@@ -87,6 +94,9 @@ private:
 
 	UFUNCTION(BlueprintCallable)
 		void setAttacking();
+
+	UFUNCTION()
+		void fireGun();
 
 	UFUNCTION()
 		void onOverlapBegin(UPrimitiveComponent * overlapComp, AActor * otherActor, UPrimitiveComponent * otherComp, int32 otherBodyIndex, bool bFromSweep, const FHitResult & sweepResult);

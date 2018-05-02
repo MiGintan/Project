@@ -5,6 +5,7 @@
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 #include "Runtime/Engine/Classes/GameFramework/Character.h"
 #include "Runtime/Engine/Classes/Engine/World.h"
+#include "Eskil.h"
 
 // Sets default values
 ACurrency::ACurrency()
@@ -32,6 +33,10 @@ void ACurrency::Tick(float DeltaTime)
 	{
 		if ((GetActorLocation() - UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation()).Size() < 25.0f)
 		{
+			AEskil* player = Cast<AEskil>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+
+			player->amount++;
+
 			this->SetActorEnableCollision(false);
 			Destroy();
 		}
@@ -40,7 +45,6 @@ void ACurrency::Tick(float DeltaTime)
 			SetActorLocation(UKismetMathLibrary::VInterpTo_Constant(GetActorLocation(), UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation(), DeltaTime, 1100.0f), false, nullptr, ETeleportType::TeleportPhysics);
 			time += DeltaTime;
 			RootComponent->SetWorldLocation(GetActorLocation() + FVector(curve->GetVectorValue(FMath::Clamp(time*2, 0.0f, 1.0f)).X * xAmp, curve->GetVectorValue(FMath::Clamp(time * 2, 0.0f, 1.0f)).Y * yAmp, curve->GetVectorValue(FMath::Clamp(time * 2, 0.0f, 1.0f)).Z * zAmp));
-			GLog->Log("Spawned");
 		}
 	}
 	else
