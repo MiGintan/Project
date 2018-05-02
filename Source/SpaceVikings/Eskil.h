@@ -67,6 +67,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Currency")
 		float amount;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+		float maxHealth;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+		float currentHealth;
+
 private:
 	UFUNCTION()
 		void teleport();
