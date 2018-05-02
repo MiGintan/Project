@@ -1,13 +1,28 @@
-Binaries
-DerivedDataCache
-Intermediate
-Saved
-.vs
-*.VC.db
-*.opensdf
-*.opendb
-*.sdf
-*.sln
-*.suo
-*.xcodeproj
-*.xcworkspace
+# Ignore generated folders
+Binaries/*
+Build/*
+Intermediate/*
+DerivedDataCache/*
+Saved/*
+
+# Don't ignore icon files in Build
+!Build/**/*.ico
+
+# Ignore lightmaps
+*_BuiltData.uasset
+
+# Ignore blender backups
+*.blend1
+
+# Ignore plugins
+Plugins/*
+
+# Ignore packaging folders
+TestBuild/
+TestBuild_Shipping/
+
+# Ignore test stuff
+Content/Builds/
+Content/Bricks/Temp
+*.uproject
+.ini
