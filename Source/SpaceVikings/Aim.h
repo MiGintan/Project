@@ -3,15 +3,18 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "BaseEnemyAI.h"
-#include "Nomlings.generated.h"
+#include "Blueprint/UserWidget.h"
+#include "Aim.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class SPACEVIKINGS_API ANomlings : public ABaseEnemyAI
+class SPACEVIKINGS_API UAim : public UUserWidget
 {
 	GENERATED_BODY()
-
+	
+	
+	
+	
 };
