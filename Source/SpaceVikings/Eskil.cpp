@@ -110,6 +110,12 @@ void AEskil::teleport()
 	}
 }
 
+float AEskil::TakeDamage(float Damage, FDamageEvent const & DamageEvent, AController * EventInstigator, AActor * DamageCauser)
+{
+	currentHealth -= Damage;
+	return 0.0f;
+}
+
 void AEskil::attack()
 {
 	useGun = false;
@@ -182,30 +188,50 @@ void AEskil::usingGun()
 		{
 			if (hit.GetComponent()->GetName() == "Aim")
 			{
-				GLog->Log("Target Locked");
-				targetLock = true;
 
-				FVector2D screenPos;
-				UGameplayStatics::ProjectWorldToScreen(UGameplayStatics::GetPlayerController(GetWorld(), 0), hit.Component->GetComponentLocation(), screenPos, true);
-				target->SetVisibility(ESlateVisibility::Visible);
-				target->SetPositionInViewport(screenPos);
 
-				FRotator rotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), hit.Actor->GetActorLocation());
-				arrow->SetWorldRotation(rotation);
+				if (targetClass)
+				{
+					if (target)
+					{
+						GLog->Log("Target Locked");
+						targetLock = true;
+
+						FVector2D screenPos;
+						UGameplayStatics::ProjectWorldToScreen(UGameplayStatics::GetPlayerController(GetWorld(), 0), hit.Component->GetComponentLocation(), screenPos, true);
+						target->SetVisibility(ESlateVisibility::Visible);
+						target->SetPositionInViewport(screenPos);
+
+						FRotator rotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), hit.Actor->GetActorLocation());
+						arrow->SetWorldRotation(rotation);
+					}
+				}
 			}
 			else
 			{
-				GLog->Log("No hit");
-				target->SetVisibility(ESlateVisibility::Hidden);
-				targetLock = false;
-				arrow->SetRelativeRotation(FRotator(0, 35, 0));
+				if(targetClass)
+				{
+					if(target)
+					{
+						GLog->Log("No hit");
+						target->SetVisibility(ESlateVisibility::Hidden);
+						targetLock = false;
+						arrow->SetRelativeRotation(FRotator(0, 35, 0));
+					}
+				}
 			}
 		}
 	}
 	else
 	{
-		bUseControllerRotationYaw = false;
-		target->SetVisibility(ESlateVisibility::Hidden);
+		if (targetClass)
+		{
+			if (target)
+			{
+				bUseControllerRotationYaw = false;
+				target->SetVisibility(ESlateVisibility::Hidden);
+			}
+		}
 	}
 }
 
@@ -247,7 +273,7 @@ void AEskil::fireGun()
 
 void AEskil::onOverlapBegin(UPrimitiveComponent * overlapComp, AActor * otherActor, UPrimitiveComponent * otherComp, int32 otherBodyIndex, bool bFromSweep, const FHitResult & sweepResult)
 {
-	if (attacking)
+	if (attacking && !otherActor->ActorHasTag(FName(TEXT("Player"))))
 	{
 		UGameplayStatics::ApplyDamage(otherActor, 1.5f, NULL, this, NULL);
 		FLatentActionInfo latentInfo;

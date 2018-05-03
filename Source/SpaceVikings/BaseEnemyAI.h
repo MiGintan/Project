@@ -15,7 +15,7 @@ class SPACEVIKINGS_API ABaseEnemyAI : public ACharacter
 
 private:
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 		void attacked();
 
 	UFUNCTION()
